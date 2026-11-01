@@ -13,6 +13,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.text.input.ImeAction
@@ -80,11 +81,13 @@ abstract class ChatUiTestBase {
     }
 
     protected fun clickText(text: String) {
+        scrollIntoViewIfNeeded(hasText(text))
         waitForStable(hasText(text))
         composeRule.onDisplayed(hasText(text)).performClick()
     }
 
     protected fun clickContentDescription(description: String) {
+        scrollIntoViewIfNeeded(hasContentDescription(description))
         waitForStable(hasContentDescription(description))
         composeRule.onDisplayed(hasContentDescription(description)).performClick()
     }
@@ -108,8 +111,18 @@ abstract class ChatUiTestBase {
     }
 
     protected fun clickTextContaining(text: String) {
+        scrollIntoViewIfNeeded(hasText(text, substring = true))
         waitForStable(hasText(text, substring = true))
         composeRule.onDisplayed(hasText(text, substring = true)).performClick()
+    }
+
+    private fun scrollIntoViewIfNeeded(matcher: SemanticsMatcher) {
+        val nodes = composeRule.onAllNodes(matcher).fetchSemanticsNodes()
+        if (nodes.any { it.isOnScreen() }) return
+        for (index in nodes.indices) {
+            runCatching { composeRule.onAllNodes(matcher)[index].performScrollTo() }
+            if (composeRule.onAllNodes(matcher).fetchSemanticsNodes().any { it.isOnScreen() }) return
+        }
     }
 
     protected fun waitForNoText(text: String) {
