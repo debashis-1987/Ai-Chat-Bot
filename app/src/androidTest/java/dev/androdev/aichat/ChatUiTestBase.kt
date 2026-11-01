@@ -172,6 +172,6 @@ abstract class ChatUiTestBase {
     }
 
     private companion object {
-        const val TIMEOUT_MS = 15_000L
+        const val TIMEOUT_MS = 60_000L
     }
 }

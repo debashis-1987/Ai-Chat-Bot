@@ -40,7 +40,7 @@ jobs:
         run: |
           reports="app/build/outputs/androidTest-results/connected/debug"
           if ls "$reports"/*.xml >/dev/null 2>&1; then
-            summary=$(grep -h -A2 '<failure' "$reports"/*.xml | head -n 6 | tr '\n' ' ' | cut -c1-900)
+            summary=$(grep -h -B1 '<failure' "$reports"/*.xml | head -n 10 | tr '\n' ' ' | cut -c1-1200)
             summary=${summary//'%'/'%25'}
             echo "::error title=Instrumented tests failed::$summary"
           else
