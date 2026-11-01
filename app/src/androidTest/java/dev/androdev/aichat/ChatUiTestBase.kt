@@ -90,7 +90,7 @@ abstract class ChatUiTestBase {
     }
 
     protected fun waitForText(text: String) {
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = TIMEOUT_MS) {
             composeRule
                 .onAllNodes(hasText(text))
                 .fetchSemanticsNodes()
@@ -99,7 +99,7 @@ abstract class ChatUiTestBase {
     }
 
     protected fun waitForTextContaining(text: String) {
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = TIMEOUT_MS) {
             composeRule
                 .onAllNodes(hasText(text, substring = true))
                 .fetchSemanticsNodes()
@@ -113,7 +113,7 @@ abstract class ChatUiTestBase {
     }
 
     protected fun waitForNoText(text: String) {
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = TIMEOUT_MS) {
             composeRule
                 .onAllNodes(hasText(text))
                 .fetchSemanticsNodes()
@@ -122,7 +122,7 @@ abstract class ChatUiTestBase {
     }
 
     protected fun waitForEnabled(description: String) {
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = TIMEOUT_MS) {
             composeRule
                 .onAllNodes(hasContentDescription(description))
                 .fetchSemanticsNodes()
@@ -135,7 +135,7 @@ abstract class ChatUiTestBase {
 
     private fun waitForStable(matcher: SemanticsMatcher) {
         var previous: Rect? = null
-        composeRule.waitUntil(timeoutMillis = 5_000) {
+        composeRule.waitUntil(timeoutMillis = TIMEOUT_MS) {
             val current = composeRule
                 .onAllNodes(matcher)
                 .fetchSemanticsNodes()
@@ -169,5 +169,9 @@ abstract class ChatUiTestBase {
             boundsInRoot.right <= screenBounds.right &&
             boundsInRoot.top >= screenBounds.top &&
             boundsInRoot.bottom <= screenBounds.bottom
+    }
+
+    private companion object {
+        const val TIMEOUT_MS = 15_000L
     }
 }

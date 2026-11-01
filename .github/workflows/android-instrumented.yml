@@ -34,3 +34,15 @@ jobs:
           target: google_apis
           emulator-boot-timeout: 900
           script: ./gradlew connectedDebugAndroidTest --stacktrace
+
+      - name: Report instrumented failures
+        if: failure()
+        run: |
+          reports="app/build/outputs/androidTest-results/connected/debug"
+          if ls "$reports"/*.xml >/dev/null 2>&1; then
+            summary=$(grep -h -A2 '<failure' "$reports"/*.xml | head -n 6 | tr '\n' ' ' | cut -c1-900)
+            summary=${summary//'%'/'%25'}
+            echo "::error title=Instrumented tests failed::$summary"
+          else
+            echo "::error title=Instrumented tests failed::No test result XML was produced (build or emulator failure)."
+          fi
